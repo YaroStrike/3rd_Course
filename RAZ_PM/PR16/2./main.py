@@ -6,6 +6,8 @@ def LineCount(S):
     with open(S, 'r') as file:
         return len(file.readlines())
 
+print("директория: ", os.getcwd())
+
 file_names = ['file1.txt', 'texts.txt', 'file3.txt']
 lines = {file: LineCount(file) for file in file_names}
 
