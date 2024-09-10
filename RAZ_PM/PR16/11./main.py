@@ -12,13 +12,12 @@ def DecodeText(S, K):
                 new_index = (original_index - K) % len(alphabet)
                 decrypted_text += alphabet[new_index]
             else:
-                new_index = (original_index - K + 32) % len (alphabet)
+                new_index = (original_index - K + len(alphabet)) % len(alphabet)
                 decrypted_text += alphabet[new_index]
         else:
             decrypted_text += char
 
     return decrypted_text
 
-# Example usage
 result = DecodeText('encrypted.txt', 3)
 print(result)
