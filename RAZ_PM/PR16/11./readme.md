@@ -12,19 +12,17 @@
 
 ##### Контрольный пример: #####
 
-> 
->
->
->
->
+> Записываю в файл (предварительно, в encrypted.txt) "волонтёр", программа выведет "ялилкпён"
+> Записываю в файл "ыифхргзщгхгв тугнхлнг", программа выведет "шестнадцатая практика".
+> Записываю в файл "SPQR! Кесарь рулит.", программа выведет "SPQR! Звоэнщ нриеп."
 
 ##### Системный анализ: #####
 
-> Входные данные:
+> Входные данные: char.
 
-> Промежуточные данные:
+> Промежуточные данные: lc_alphabet, uc_alphabet, text, original_index, new_index, S, K, decrypted_text.
 
-> Выходные данные:
+> Выходные данные: result.
 
 ##### Блок-схема: #####
 
@@ -32,7 +30,30 @@
 
 ##### Код программы: #####
 ```python
+def DecodeText(S, K):
+    lc_alphabet = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
+    uc_alphabet = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'
+    decrypted_text = ''
 
+    with open(S, 'r', encoding='utf-8') as file:
+        text = file.read()
+
+    for char in text:
+        if char in lc_alphabet:
+            original_index = lc_alphabet.index(char)
+            new_index = (original_index - K) % len(lc_alphabet)
+            decrypted_text += lc_alphabet[new_index]
+        elif char in uc_alphabet:
+            original_index = uc_alphabet.index(char)
+            new_index = (original_index - K) % len(uc_alphabet)
+            decrypted_text += uc_alphabet[new_index]
+        else:
+            decrypted_text += char
+
+    return decrypted_text
+
+result = DecodeText('encrypted.txt', 3)
+print(result)
 ```
 ##### Результат работы программы: #####
 
@@ -50,4 +71,4 @@
 
 ##### Вывод по проделанной работе: #####
 
-> 
+> и почему букву ё недооценивают?
