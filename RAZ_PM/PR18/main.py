@@ -2,7 +2,9 @@ import tkinter as tk
 
 def animation():
     for shape in shapes:
-        canvas.move(shape, 5, 0)
+        canvas.move(shape, 5, -5)
+        canvas.move(hobot, 0.4, 0.1)
+    canvas.move(hobot, 0, -5.1)
     canvas.after(100, animation)
 
 root = tk.Tk()
@@ -32,7 +34,7 @@ shapes.append(canvas.create_oval(330, 150, 350, 170, fill='white'))
 shapes.append(canvas.create_oval(260, 160, 265, 165, fill='black'))
 shapes.append(canvas.create_oval(340, 160, 345, 165, fill='black'))
 # Хобот
-shapes.append(canvas.create_rectangle(300, 225, 500, 205, fill='darkgray'))
+hobot = (canvas.create_rectangle(300, 225, 500, 205, fill='darkgray'))
 
 animation()
 root.mainloop()
