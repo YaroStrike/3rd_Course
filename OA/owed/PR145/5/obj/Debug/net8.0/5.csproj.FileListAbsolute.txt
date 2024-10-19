@@ -1,0 +1,15 @@
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/bin/Debug/net8.0/5
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/bin/Debug/net8.0/5.deps.json
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/bin/Debug/net8.0/5.runtimeconfig.json
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/bin/Debug/net8.0/5.dll
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/bin/Debug/net8.0/5.pdb
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/5.GeneratedMSBuildEditorConfig.editorconfig
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/5.AssemblyInfoInputs.cache
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/5.AssemblyInfo.cs
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/5.csproj.CoreCompileInputs.cache
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/5.sourcelink.json
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/5.dll
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/refint/5.dll
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/5.pdb
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/5.genruntimeconfig.cache
+/home/yarik/repos/3rd_Course/OA/owed/PR145/5/obj/Debug/net8.0/ref/5.dll
