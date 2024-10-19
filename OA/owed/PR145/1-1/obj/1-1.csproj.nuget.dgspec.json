@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/home/yarik/repos/3rd_Course/OA/owed/PR145/1-1/1-1.csproj": {}
+    "C:\\Users\\nosko\\code\\3rd_Course\\OA\\owed\\PR145\\1-1\\1-1.csproj": {}
   },
   "projects": {
-    "/home/yarik/repos/3rd_Course/OA/owed/PR145/1-1/1-1.csproj": {
+    "C:\\Users\\nosko\\code\\3rd_Course\\OA\\owed\\PR145\\1-1\\1-1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/yarik/repos/3rd_Course/OA/owed/PR145/1-1/1-1.csproj",
+        "projectUniqueName": "C:\\Users\\nosko\\code\\3rd_Course\\OA\\owed\\PR145\\1-1\\1-1.csproj",
         "projectName": "1-1",
-        "projectPath": "/home/yarik/repos/3rd_Course/OA/owed/PR145/1-1/1-1.csproj",
-        "packagesPath": "/home/yarik/.nuget/packages/",
-        "outputPath": "/home/yarik/repos/3rd_Course/OA/owed/PR145/1-1/obj/",
+        "projectPath": "C:\\Users\\nosko\\code\\3rd_Course\\OA\\owed\\PR145\\1-1\\1-1.csproj",
+        "packagesPath": "C:\\Users\\nosko\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\nosko\\code\\3rd_Course\\OA\\owed\\PR145\\1-1\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/yarik/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\nosko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -58,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
