@@ -11,10 +11,10 @@ class Program
         Console.WriteLine("3 - 98");
         Console.WriteLine("4 - ДТ");
         Console.Write("Ваш выбор -> ");
-        double fuelType = Convert.ToInt32(Console.ReadLine());
+        double fuelType = Convert.ToInt16(Console.ReadLine());
 
         Console.Write("Литров -> ");
-        double liters = Convert.ToInt32(Console.ReadLine());
+        double liters = Convert.ToInt16(Console.ReadLine());
 
         double price92 = 68.43;
         double price95 = 69.94;

@@ -5,7 +5,7 @@ class Program
     static void Main()
     {
         Console.Write("Введите номер месяца (от 1 до 12) -> ");
-        int month = Convert.ToInt32(Console.ReadLine());
+        int month = Convert.ToInt16(Console.ReadLine());
 
         if (month == 12 || month == 1 || month == 2)
         {

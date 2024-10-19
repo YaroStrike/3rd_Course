@@ -9,10 +9,10 @@ class Program
         Console.WriteLine("2 - 10x15");
         Console.WriteLine("3 - 18x24");
         Console.Write("Ваш выбор -> ");
-        int sizeChoice = int.Parse(Console.ReadLine());
+        int sizeChoice = Convert.ToInt16(Console.ReadLine());
 
         Console.Write("Количество -> ");
-        int quantity = int.Parse(Console.ReadLine());
+        int quantity = Convert.ToInt16(Console.ReadLine());
 
         double pricePerPhoto;
 

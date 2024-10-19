@@ -5,7 +5,7 @@ class Program
     static void Main()
     {
         Console.WriteLine("Введите номер дня недели (1-7):");
-        int dayNumber = Convert.ToInt32(Console.ReadLine());
+        int dayNumber = Convert.ToInt16(Console.ReadLine());
 
         switch (dayNumber)
         {
