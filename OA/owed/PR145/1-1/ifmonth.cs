@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 class Program
 {
@@ -7,35 +7,25 @@ class Program
         Console.Write("Введите номер месяца (от 1 до 12) -> ");
         int month = Convert.ToInt16(Console.ReadLine());
 
-        string season;
-
-        switch (month)
+        if (month == 12 || month == 1 || month == 2)
         {
-            case 12:
-            case 1:
-            case 2:
-                season = "Зима";
-                break;
-            case 3:
-            case 4:
-            case 5:
-                season = "Весна";
-                break;
-            case 6:
-            case 7:
-            case 8:
-                season = "Лето";
-                break;
-            case 9:
-            case 10:
-            case 11:
-                season = "Осень";
-                break;
-            default:
-                season = "Некорректный номер месяца";
-                break;
+            Console.WriteLine("Зима");
         }
-
-        Console.WriteLine(season);
+        else if (month >= 3 && month <= 5)
+        {
+            Console.WriteLine("Весна");
+        }
+        else if (month >= 6 && month <= 8)
+        {
+            Console.WriteLine("Лето");
+        }
+        else if (month >= 9 && month <= 11)
+        {
+            Console.WriteLine("Осень");
+        }
+        else
+        {
+            Console.WriteLine("Некорректный номер месяца. Пожалуйста, введите число от 1 до 12.");
+        }
     }
 }
