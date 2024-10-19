@@ -5,10 +5,10 @@ class Program
     static void Main()
     {
         Console.Write("Введите длительность разговора (в минутах): ");
-        int duration = int.Parse(Console.ReadLine());
+        int duration = Convert.ToInt32(Console.ReadLine());
 
         Console.Write("Введите номер дня недели (1-7): ");
-        int dayOfWeek = int.Parse(Console.ReadLine());
+        int dayOfWeek = Convert.ToInt32(Console.ReadLine());
 
         double pricePerMinute = 6.46;
         double totalPrice = duration * pricePerMinute;
