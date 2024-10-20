@@ -1,0 +1,15 @@
+/home/yarik/repos/3rd_Course/OA/owed/PR19/bin/Debug/net8.0/PR19
+/home/yarik/repos/3rd_Course/OA/owed/PR19/bin/Debug/net8.0/PR19.deps.json
+/home/yarik/repos/3rd_Course/OA/owed/PR19/bin/Debug/net8.0/PR19.runtimeconfig.json
+/home/yarik/repos/3rd_Course/OA/owed/PR19/bin/Debug/net8.0/PR19.dll
+/home/yarik/repos/3rd_Course/OA/owed/PR19/bin/Debug/net8.0/PR19.pdb
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/PR19.GeneratedMSBuildEditorConfig.editorconfig
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/PR19.AssemblyInfoInputs.cache
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/PR19.AssemblyInfo.cs
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/PR19.csproj.CoreCompileInputs.cache
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/PR19.sourcelink.json
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/PR19.dll
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/refint/PR19.dll
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/PR19.pdb
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/PR19.genruntimeconfig.cache
+/home/yarik/repos/3rd_Course/OA/owed/PR19/obj/Debug/net8.0/ref/PR19.dll
