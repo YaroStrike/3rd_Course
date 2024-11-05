@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,7 +19,7 @@ namespace WindowsFormsApp1
             //string currentDirectory = Environment.CurrentDirectory;
             //MessageBox.Show($"Папка: {currentDirectory}");
             InitializeComponent();
-            string imagePath = "input.png"; 
+            string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "input.png"); 
             pictureBox1.Image = Image.FromFile(imagePath);
         }
 
