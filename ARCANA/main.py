@@ -54,25 +54,20 @@ def create_main_window():
     
     books = fetch_books()
     
-    for book in books:
-        # Открываем изображение с помощью PIL
+    for index, book in enumerate(books):
         image = Image.open(book[3])
-        # Изменяем размер изображения
-        image = image.resize((153, 237), Image.LANCZOS)  # Укажите желаемые размеры
-        cover = ImageTk.PhotoImage(image)  # Преобразуем в PhotoImage для Tkinter
+        image = image.resize((153, 237), Image.LANCZOS)
+        cover = ImageTk.PhotoImage(image)
         
-        # Создаем фрейм для обложки и названия
-        frame = tk.Frame(window)
-        frame.pack(side=tk.LEFT, padx=30)
+        # Используем grid для размещения обложек
+        row = index // 3  # 3 обложки в строке
+        column = index % 3
+        button = tk.Button(window, image=cover, command=lambda id=book[0]: show_details(id))
+        button.image = cover
+        button.grid(row=row, column=column, padx=10, pady=10)
         
-        # Кнопка с изображением обложки
-        button = tk.Button(frame, image=cover, command=lambda id=book[0]: show_details(id))
-        button.image = cover  # Сохраняем ссылку на изображение
-        button.pack()
-        
-        # Метка с названием книги
-        label = tk.Label(frame, text=book[1])  # book[1] - это название книги
-        label.pack()
+        label = tk.Label(window, text=book[1])
+        label.grid(row=row + 1, column=column)  # Название под обложкой
     
     window.mainloop()
 
