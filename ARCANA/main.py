@@ -60,16 +60,20 @@ def create_main_window():
         cover = ImageTk.PhotoImage(image)
         
         # Используем grid для размещения обложек
-        row = index // 3  # 3 обложки в строке
-        column = index % 3
+        row = index // 4  # 4 обложки в строке
+        column = index % 4
+        
         button = tk.Button(window, image=cover, command=lambda id=book[0]: show_details(id))
         button.image = cover
-        button.grid(row=row, column=column, padx=10, pady=10)
+        button.grid(row=row, column=column, padx=10, pady=(50, 0))  # Уменьшаем нижний отступ
         
+        # Изменяем размещение метки с названием книги
         label = tk.Label(window, text=book[1])
-        label.grid(row=row + 1, column=column)  # Название под обложкой
+        label.grid(row=row + 1, column=column, padx=10, pady=(0, 10), sticky='n')  # Используем sticky для выравнивания по верху
     
     window.mainloop()
+
+
 
 create_main_window()
 
@@ -92,4 +96,4 @@ def insert_book(title, author, cover_image, description, content):
 
 # Пример добавления книги
 insert_book("Программирование на Python", "Автор 3", "cover1.png", "Описание книги 1", "Содержимое книги 1")
-insert_book("Изучаем алгоритмы", "Автор 4", "cover2.png", "Описание книги 2", "Содержимое книги 2")
+insert_book("Изучаем алгоритмы", "Автор 5", "cover2.png", "Описание книги 2", "Содержимое книги 2")
