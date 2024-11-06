@@ -3,12 +3,14 @@ from tkinter import messagebox
 from tkinter import PhotoImage
 import sqlite3
 import os
+from PIL import Image, ImageTk
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
+first_db = 'books_catalog.db'
 
 def create_database():
-    connection = sqlite3.connect('books_catalog.db')
+    connection = sqlite3.connect(first_db)
     cursor = connection.cursor()
     
     cursor.execute('''
@@ -28,7 +30,7 @@ def create_database():
 create_database()
 
 def fetch_books():
-    connection = sqlite3.connect('books_catalog.db')
+    connection = sqlite3.connect(first_db)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM books")
     books = cursor.fetchall()
@@ -36,7 +38,7 @@ def fetch_books():
     return books
 
 def show_details(book_id):
-    connection = sqlite3.connect('books_catalog.db')
+    connection = sqlite3.connect(first_db)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM books WHERE id=?", (book_id,))
     book = cursor.fetchone()
@@ -53,24 +55,46 @@ def create_main_window():
     books = fetch_books()
     
     for book in books:
-        cover = PhotoImage(file=book[3])  # Путь к изображению обложки
-        button = tk.Button(window, image=cover, command=lambda id=book[0]: show_details(id))
+        # Открываем изображение с помощью PIL
+        image = Image.open(book[3])
+        # Изменяем размер изображения
+        image = image.resize((153, 237), Image.LANCZOS)  # Укажите желаемые размеры
+        cover = ImageTk.PhotoImage(image)  # Преобразуем в PhotoImage для Tkinter
+        
+        # Создаем фрейм для обложки и названия
+        frame = tk.Frame(window)
+        frame.pack(side=tk.LEFT, padx=30)
+        
+        # Кнопка с изображением обложки
+        button = tk.Button(frame, image=cover, command=lambda id=book[0]: show_details(id))
         button.image = cover  # Сохраняем ссылку на изображение
-        button.pack(side=tk.LEFT)
+        button.pack()
+        
+        # Метка с названием книги
+        label = tk.Label(frame, text=book[1])  # book[1] - это название книги
+        label.pack()
     
     window.mainloop()
 
 create_main_window()
 
 def insert_book(title, author, cover_image, description, content):
-    connection = sqlite3.connect('books_catalog.db')
+    connection = sqlite3.connect(first_db)
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO books (title, author, cover_image, description, content) VALUES (?, ?, ?, ?, ?)",
-                   (title, author, cover_image, description, content))
-    connection.commit()
+    
+    # Проверяем, существует ли книга с таким же названием и автором
+    cursor.execute("SELECT * FROM books WHERE title=? AND author=?", (title, author))
+    existing_book = cursor.fetchone()
+    
+    if existing_book is None:  # Если книга не найдена, добавляем её
+        cursor.execute("INSERT INTO books (title, author, cover_image, description, content) VALUES (?, ?, ?, ?, ?)",
+                       (title, author, cover_image, description, content))
+        connection.commit()
+    else:
+        print(f"Книга '{author} - {title}' уже существует в базе данных '{first_db}' (пропуск).")
+    
     connection.close()
 
 # Пример добавления книги
-insert_book("Программирование на Python", "Автор 1", "cover1.jpg", "Описание книги 1", "Содержимое книги 1")
-insert_book("Изучаем алгоритмы", "Автор 2", "cover2.png", "Описание книги 2", "Содержимое книги 2")
-
+insert_book("Программирование на Python", "Автор 3", "cover1.png", "Описание книги 1", "Содержимое книги 1")
+insert_book("Изучаем алгоритмы", "Автор 4", "cover2.png", "Описание книги 2", "Содержимое книги 2")
