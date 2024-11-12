@@ -59,15 +59,15 @@ def show_details(book_id):
             cover = ImageTk.PhotoImage(image)
             cover_label = tk.Label(details_frame, image=cover)
             cover_label.image = cover
-            cover_label.grid(row=0, column=0, sticky='nw' ,padx=70, pady=0)  # Размещаем обложку в верхнем левом углу
+            cover_label.grid(row=0, column=0, padx=70, pady=0)  # Размещаем обложку в верхнем левом углу
         except FileNotFoundError:
             print(f"Файл обложки {book[3]} не найден.")
             return
 
         # Отображаем информацию о книге
-        details = f"Автор:           {book[2]}\nНазвание:    {book[1]}\nОписание:    {book[4]}"
+        details = f"Автор:             {book[2]}\nНазвание:     {book[1]}\nОписание:     {book[4]}"
         details_label = tk.Label(details_frame, text=details, font=("Arial", 14), justify='left')
-        details_label.grid(row=0, column=1, sticky='nw', padx=0, pady=0)  # Размещаем детали справа от обложки
+        details_label.grid(row=0, column=1, padx=10, pady=10)  # Размещаем детали справа от обложки
 
         # Кнопка "Назад"
         back_button = tk.Button(details_frame, text="Назад", command=lambda: back_to_catalog(details_frame), font=("Arial", 14))
