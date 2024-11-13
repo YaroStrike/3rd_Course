@@ -42,24 +42,30 @@ def fetch_books():
 
 # Окно
 def create_main_window():
-    global window, catalog_frame
+    global window, catalog_frame, canvas, scrollbar
     window = tk.Tk()
     window.title("Каталог специальной литературы")
-    window.geometry("900x680")
-    
-    # Текстбокс поиска
-    search_label = tk.Label(window, text="Поиск: ", font=("Arial", 12))
-    search_label.grid(row=0, column=0, padx=41, pady=10, sticky='nw')
+    window.geometry("980x680")
 
-    search_entry = tk.Entry(window, font=("Arial", 12))
-    search_entry.grid(row=0, column=0, padx=110, pady=10, sticky='nw')
-    search_entry.bind("<KeyRelease>", lambda event: update_catalog(search_entry.get()))
+    # Создание Canvas и Scrollbar
+    canvas = tk.Canvas(window)
+    scrollbar = tk.Scrollbar(window, orient="vertical", command=canvas.yview)
+    catalog_frame = tk.Frame(canvas)
 
-    # Главное меню
-    catalog_frame = tk.Frame(window)
-    catalog_frame.grid(row=1, column=0)
-    catalog_frame.grid(row=1, column=0) 
+    catalog_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
+    canvas.create_window((0, 0), window=catalog_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    # Настройка grid для правильного распределения пространства
+    window.grid_rowconfigure(1, weight=1)  # Позволяет строке 1 занимать доступное пространство
+    window.grid_columnconfigure(0, weight=1)  # Позволяет колонне 0 занимать доступное пространство
+
+    # Размещение Canvas и Scrollbar
+    canvas.grid(row=1, column=0, sticky='nsew')
+    scrollbar.grid(row=1, column=1, sticky='ns')
+
+    # Загрузка книг
     books = fetch_books()
     
     for index, book in enumerate(books):
@@ -76,12 +82,12 @@ def create_main_window():
         
         button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0]: show_details(id))
         button.image = cover
-        button.grid(row=row, column=column, padx=10, pady=50)  # Интервал обложек в меню
+        button.grid(row=row, column=column, padx=10) # Интервал обложек в меню
         
         # Размещение названия книги
         label = tk.Label(catalog_frame, text=book[1], font=("Arial", 12))
-        label.grid(row=row + 1, column=column, padx=10, pady=10, sticky='n')
-    
+        label.grid(row=row + 1, column=column, padx=10, sticky='n')
+
     update_catalog("")
     window.mainloop()
 
@@ -107,7 +113,7 @@ def update_catalog(search_text):
             except FileNotFoundError:
                 continue
 
-            row = index // 4 
+            row = index // 4
             column = index % 4
             
             button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0]: show_details(id))
@@ -185,5 +191,5 @@ def insert_book(title, author, cover_image, description, content):
     connection.close()
 
 # Создание новых строк БД прямо из кода
-insert_book("Программирование на Python", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
-insert_book("Изучаем алгоритмы", "Автор 5", "covers/cover2.png", "Описание книги 2", "Содержимое книги 2") 
+insert_book("Мастер и Маргарита (не фейк)", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
+insert_book("ШИФР", "Автор 5", "covers/cover2.png", "Описание книги 2", "Содержимое книги 2") 
