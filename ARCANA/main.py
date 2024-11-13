@@ -40,15 +40,25 @@ def fetch_books():
     connection.close()
     return books
 
-# Окно, главное меню
+# Окно
 def create_main_window():
     global window, catalog_frame
     window = tk.Tk()
     window.title("Каталог специальной литературы")
     window.geometry("900x680")
     
+    # Текстбокс поиска
+    search_label = tk.Label(window, text="Поиск: ", font=("Arial", 12))
+    search_label.grid(row=0, column=0, padx=41, pady=10, sticky='nw')
+
+    search_entry = tk.Entry(window, font=("Arial", 12))
+    search_entry.grid(row=0, column=0, padx=110, pady=10, sticky='nw')
+    search_entry.bind("<KeyRelease>", lambda event: update_catalog(search_entry.get()))
+
+    # Главное меню
     catalog_frame = tk.Frame(window)
-    catalog_frame.pack()
+    catalog_frame.grid(row=1, column=0)
+    catalog_frame.grid(row=1, column=0) 
 
     books = fetch_books()
     
@@ -66,18 +76,51 @@ def create_main_window():
         
         button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0]: show_details(id))
         button.image = cover
-        button.grid(row=row, column=column, padx=10, pady=(50, 0))  # Интервал обложек в меню
+        button.grid(row=row, column=column, padx=10, pady=50)  # Интервал обложек в меню
         
         # Размещение названия книги
         label = tk.Label(catalog_frame, text=book[1], font=("Arial", 12))
-        label.grid(row=row + 1, column=column, padx=10, pady=(0, 10), sticky='n')
+        label.grid(row=row + 1, column=column, padx=10, pady=10, sticky='n')
     
+    update_catalog("")
     window.mainloop()
+
+# Функция для обновления каталога на основе введенного текста
+def update_catalog(search_text):
+    for widget in catalog_frame.winfo_children():
+        widget.destroy()  # Удаляем старые элементы
+
+    books = fetch_books()
+    filtered_books = [book for book in books if search_text.lower() in book[1].lower() or 
+                      search_text.lower() in book[2].lower() or 
+                      search_text.lower() in book[4].lower()]
+
+    if not filtered_books:
+        no_match_label = tk.Label(catalog_frame, text="Совпадения не найдены.", font=("Arial", 12))
+        no_match_label.grid(row=0, column=0, padx=10, pady=10)
+    else:
+        for index, book in enumerate(filtered_books):
+            try:
+                image = Image.open(book[3])
+                image = image.resize((153, 237), Image.LANCZOS)
+                cover = ImageTk.PhotoImage(image)
+            except FileNotFoundError:
+                continue
+
+            row = index // 4 
+            column = index % 4
+            
+            button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0]: show_details(id))
+            button.image = cover
+            button.grid(row=row, column=column, padx=10, pady=(50, 0))
+            
+            label = tk.Label(catalog_frame, text=book[1], font=("Arial", 12))
+            label.grid(row=row + 1, column=column, padx=10, pady=(0, 10), sticky='n')
 
 # Окно подробностей книги
 def show_details(book_id):
     # Скрываем каталог
-    catalog_frame.pack_forget()
+    catalog_frame.grid_forget()
     
     # Получаем данные о книге
     connection = sqlite3.connect(first_db)
@@ -89,7 +132,7 @@ def show_details(book_id):
     if book:
         # Новый фрейм для подробностей книги
         details_frame = tk.Frame(window)
-        details_frame.pack(pady=20)
+        details_frame.grid(row=0, column=0, padx=20, pady=20)
 
         # Отображение обложки книги в фрейме
         try:
@@ -114,8 +157,8 @@ def show_details(book_id):
 
 # Возвращение в каталог
 def back_to_catalog(details_frame):
-    details_frame.pack_forget() 
-    catalog_frame.pack() 
+    details_frame.grid_forget() 
+    catalog_frame.grid(row=1, column=0)
 
 create_main_window()
 
@@ -143,4 +186,4 @@ def insert_book(title, author, cover_image, description, content):
 
 # Создание новых строк БД прямо из кода
 insert_book("Программирование на Python", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
-insert_book("Изучаем алгоритмы", "Автор 5", "covers/cover2.png", "Описание книги 2", "Содержимое книги 2")
+insert_book("Изучаем алгоритмы", "Автор 5", "covers/cover2.png", "Описание книги 2", "Содержимое книги 2") 
