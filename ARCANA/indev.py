@@ -40,13 +40,29 @@ def fetch_books():
     connection.close()
     return books
 
-# Окно
+# Скролл
+def bind_scroll_events():
+    catalog_canvas.bind("<MouseWheel>", lambda event: catalog_canvas.yview_scroll(-1 if event.delta > 0 else 1, "units"))  # Windows
+    catalog_canvas.bind("<Button-4>", lambda event: catalog_canvas.yview_scroll(-1, "units"))  # Прокрутка вверх (Linux)
+    catalog_canvas.bind("<Button-5>", lambda event: catalog_canvas.yview_scroll(1, "units"))   # Прокрутка вниз (Linux)
+
+    catalog_frame.bind("<Enter>", lambda event: catalog_canvas.bind_all("<MouseWheel>", lambda e: catalog_canvas.yview_scroll(-1 if e.delta > 0 else 1, "units")))
+    catalog_frame.bind("<Leave>", lambda event: catalog_canvas.unbind_all("<MouseWheel>"))
+    
+    # Обработка прокрутки для фрейма
+    catalog_frame.bind("<MouseWheel>", lambda event: catalog_canvas.yview_scroll(-1 if event.delta > 0 else 1, "units"))
+
+# Окно и виджеты
 def create_main_window():
     global window, catalog_frame
     window = tk.Tk()
     window.title("Каталог специальной литературы")
     window.geometry("980x680")
     
+    # Настройка весов
+    window.grid_rowconfigure(1, weight=1)
+    window.grid_columnconfigure(0, weight=1)
+
     # Текстбокс поиска
     search_label = tk.Label(window, text="Поиск: ", font=("Arial", 14))
     search_label.grid(row=0, column=0, padx=41, pady=10, sticky='nw')
@@ -55,36 +71,39 @@ def create_main_window():
     search_entry.grid(row=0, column=0, padx=110, pady=10, sticky='nw')
     search_entry.bind("<KeyRelease>", lambda event: update_catalog(search_entry.get()))
 
-    # Главное меню
-    canvas = tk.Canvas(window)
-    scrollbar = tk.Scrollbar(window, orient="vertical", command=canvas.yview)
-    catalog_frame = tk.Frame(canvas)
-
-    # Настройка прокрутки
-    catalog_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-    canvas.create_window((0, 0), window=catalog_frame, anchor="nw")
-
-    # Размещение Canvas и Scrollbar
-    canvas.grid(row=1, column=0, sticky='nsew')
+    # Создание фрейма для прокрутки
+    scrollbar = tk.Scrollbar(window, orient="vertical")
     scrollbar.grid(row=1, column=1, sticky='ns')
 
-    # Привязка Scrollbar к Canvas
-    canvas.configure(yscrollcommand=scrollbar.set)
+    global catalog_canvas
+    catalog_canvas = tk.Canvas(window, yscrollcommand=scrollbar.set)
+    catalog_canvas.grid(row=1, column=0, sticky='nsew')
+    scrollbar.config(command=catalog_canvas.yview)
+
+    catalog_frame = tk.Frame(catalog_canvas)
+    catalog_canvas.create_window((0, 0), window=catalog_frame, anchor='nw')
+
+    catalog_frame.bind("<Configure>", update_scroll_region)
+
+    bind_scroll_events()
 
     # Загрузка книг
     load_books()
 
-image_references = []
+    # Обновление области прокрутки
+    window.update_idletasks()  # Обновляем все задачи интерфейса
+
+# Обновление размеров canvas
+def update_scroll_region(event):
+    catalog_canvas.configure(scrollregion=catalog_canvas.bbox("all"))
 
 def load_books():
     books = fetch_books()
-    
     for index, book in enumerate(books):
         try:
             image = Image.open(book[3])
             image = image.resize((153, 237), Image.LANCZOS)
-            cover = ImageTk.PhotoImage(image, master=window)
-            image_references.append(cover)
+            cover = ImageTk.PhotoImage(image)
         except FileNotFoundError:
             continue  # Пропустить книгу, если обложка не найдена
 
@@ -99,10 +118,10 @@ def load_books():
         # Размещение названия книги
         label = tk.Label(catalog_frame, text=book[1], font=("Arial", 12))
         label.grid(row=row + 1, column=column, padx=10, pady=10, sticky='n')
-        pass
-    create_main_window()
-    #update_catalog("")
+
+    update_catalog("")
     window.mainloop()
+    window.update_idletasks()
 
 # Функция для обновления каталога на основе введенного текста
 def update_catalog(search_text):
@@ -129,7 +148,7 @@ def update_catalog(search_text):
             try:
                 image = Image.open(book[3])
                 image = image.resize((153, 237), Image.LANCZOS)
-                cover = ImageTk.PhotoImage(image, master=window)
+                cover = ImageTk.PhotoImage(image)
             except FileNotFoundError:
                 continue
 
@@ -206,10 +225,9 @@ def insert_book(title, author, cover_image, description, content):
         except Exception as e:
             print(f"Произошла ошибка при добавлении книги: {e}")
     else:
-        print(f"Книга '{author} - {title}' уже существует в базе данных '{first_db}'.")
+        print(f"Книга '{author} - {title}' уже существует в базе данных '{first_db}' (пропуск).")
     
     connection.close()
 
-# Создание новых строк БД прямо из кода
-insert_book("Программирование на Python", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
-insert_book("Изучаем алгоритмы", "Автор 5", "covers/cover2.png", "Описание книги 2", "Содержимое книги 2") 
+# Создание новых строк БД прямо из кода, (пропускается, если уже есть)
+insert_book("Программирование на PHP", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
