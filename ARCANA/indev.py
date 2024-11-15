@@ -204,6 +204,8 @@ def show_details(book_id):
 def back_to_catalog(details_frame):
     details_frame.grid_forget() 
     catalog_frame.grid(row=1, column=0)
+    bind_scroll_events()  # Повторная привязка событий прокрутки
+    update_scroll_region(None)  # Обновление области прокрутки
 
 create_main_window()
 
