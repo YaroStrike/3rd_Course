@@ -191,6 +191,5 @@ def insert_book(title, author, cover_image, description, content):
     
     connection.close()
 
-# Создание новых строк БД прямо из кода
-insert_book("Программирование на Python", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
-insert_book("Изучаем алгоритмы", "Автор 5", "covers/cover2.png", "Описание книги 2", "Содержимое книги 2") 
+# Создание новых строк БД прямо из кода, (пропускается, если уже есть)
+#insert_book("Программирование на Python", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
