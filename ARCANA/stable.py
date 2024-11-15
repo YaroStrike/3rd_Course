@@ -187,7 +187,7 @@ def insert_book(title, author, cover_image, description, content):
         except Exception as e:
             print(f"Произошла ошибка при добавлении книги: {e}")
     else:
-        print(f"Книга '{author} - {title}' уже существует в базе данных '{first_db}'.")
+        print(f"Книга '{author} - {title}' уже существует в базе данных '{first_db}' (пропуск).")
     
     connection.close()
 
