@@ -48,7 +48,7 @@ def create_main_window():
     window.geometry("980x680")
     
     # Текстбокс поиска
-    search_label = tk.Label(window, text="Поиск: ", font=("Arial", 12))
+    search_label = tk.Label(window, text="Поиск: ", font=("Arial", 14))
     search_label.grid(row=0, column=0, padx=41, pady=10, sticky='nw')
 
     search_entry = tk.Entry(window, font=("Arial", 12))
@@ -89,14 +89,21 @@ def create_main_window():
 def update_catalog(search_text):
     for widget in catalog_frame.winfo_children():
         widget.destroy()  # Удаляем старые элементы
+        
+    loading_label = tk.Label(catalog_frame, text="Загрузка...", font=("Arial", 14))
+    loading_label.grid(row=0, column=0, padx=10, pady=10)
+
+    window.update()
 
     books = fetch_books()
     filtered_books = [book for book in books if search_text.lower() in book[1].lower() or 
                       search_text.lower() in book[2].lower() or 
                       search_text.lower() in book[4].lower()]
 
+    loading_label.grid_forget()  # Скрываем метку "Загрузка..."
+
     if not filtered_books:
-        no_match_label = tk.Label(catalog_frame, text="Совпадения не найдены.", font=("Arial", 12))
+        no_match_label = tk.Label(catalog_frame, text="Совпадения не найдены.", font=("Arial", 14))
         no_match_label.grid(row=0, column=0, padx=10, pady=10)
     else:
         for index, book in enumerate(filtered_books):
@@ -119,7 +126,7 @@ def update_catalog(search_text):
 
 # Окно подробностей книги
 def show_details(book_id):
-    # Скрываем каталог
+    # Скрываем каталог (скрытие поиска приводит к ошибке)
     catalog_frame.grid_forget()
     
     # Получаем данные о книге
@@ -132,7 +139,7 @@ def show_details(book_id):
     if book:
         # Новый фрейм для подробностей книги
         details_frame = tk.Frame(window)
-        details_frame.grid(row=0, column=0, padx=20, pady=20)
+        details_frame.grid(row=0, column=0, padx=10, pady=10)
 
         # Отображение обложки книги в фрейме
         try:

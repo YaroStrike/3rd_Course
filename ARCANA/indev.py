@@ -42,37 +42,49 @@ def fetch_books():
 
 # Окно
 def create_main_window():
-    global window, catalog_frame, canvas, scrollbar
+    global window, catalog_frame
     window = tk.Tk()
     window.title("Каталог специальной литературы")
     window.geometry("980x680")
+    
+    # Текстбокс поиска
+    search_label = tk.Label(window, text="Поиск: ", font=("Arial", 14))
+    search_label.grid(row=0, column=0, padx=41, pady=10, sticky='nw')
 
-    # Создание Canvas и Scrollbar
+    search_entry = tk.Entry(window, font=("Arial", 12))
+    search_entry.grid(row=0, column=0, padx=110, pady=10, sticky='nw')
+    search_entry.bind("<KeyRelease>", lambda event: update_catalog(search_entry.get()))
+
+    # Главное меню
     canvas = tk.Canvas(window)
     scrollbar = tk.Scrollbar(window, orient="vertical", command=canvas.yview)
     catalog_frame = tk.Frame(canvas)
 
+    # Настройка прокрутки
     catalog_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-
     canvas.create_window((0, 0), window=catalog_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar.set)
-
-    # Настройка grid для правильного распределения пространства
-    window.grid_rowconfigure(1, weight=1)  # Позволяет строке 1 занимать доступное пространство
-    window.grid_columnconfigure(0, weight=1)  # Позволяет колонне 0 занимать доступное пространство
 
     # Размещение Canvas и Scrollbar
     canvas.grid(row=1, column=0, sticky='nsew')
     scrollbar.grid(row=1, column=1, sticky='ns')
 
+    # Привязка Scrollbar к Canvas
+    canvas.configure(yscrollcommand=scrollbar.set)
+
     # Загрузка книг
+    load_books()
+
+image_references = []
+
+def load_books():
     books = fetch_books()
     
     for index, book in enumerate(books):
         try:
             image = Image.open(book[3])
             image = image.resize((153, 237), Image.LANCZOS)
-            cover = ImageTk.PhotoImage(image)
+            cover = ImageTk.PhotoImage(image, master=window)
+            image_references.append(cover)
         except FileNotFoundError:
             continue  # Пропустить книгу, если обложка не найдена
 
@@ -82,38 +94,46 @@ def create_main_window():
         
         button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0]: show_details(id))
         button.image = cover
-        button.grid(row=row, column=column, padx=10) # Интервал обложек в меню
+        button.grid(row=row, column=column, padx=10, pady=50)  # Интервал обложек в меню
         
         # Размещение названия книги
         label = tk.Label(catalog_frame, text=book[1], font=("Arial", 12))
-        label.grid(row=row + 1, column=column, padx=10, sticky='n')
-
-    update_catalog("")
+        label.grid(row=row + 1, column=column, padx=10, pady=10, sticky='n')
+        pass
+    create_main_window()
+    #update_catalog("")
     window.mainloop()
 
 # Функция для обновления каталога на основе введенного текста
 def update_catalog(search_text):
     for widget in catalog_frame.winfo_children():
         widget.destroy()  # Удаляем старые элементы
+        
+    loading_label = tk.Label(catalog_frame, text="Загрузка...", font=("Arial", 14))
+    loading_label.grid(row=0, column=0, padx=10, pady=10)
+
+    window.update()
 
     books = fetch_books()
     filtered_books = [book for book in books if search_text.lower() in book[1].lower() or 
                       search_text.lower() in book[2].lower() or 
                       search_text.lower() in book[4].lower()]
 
+    loading_label.grid_forget()  # Скрываем метку "Загрузка..."
+
     if not filtered_books:
-        no_match_label = tk.Label(catalog_frame, text="Совпадения не найдены.", font=("Arial", 12))
+        no_match_label = tk.Label(catalog_frame, text="Совпадения не найдены.", font=("Arial", 14))
         no_match_label.grid(row=0, column=0, padx=10, pady=10)
     else:
         for index, book in enumerate(filtered_books):
             try:
                 image = Image.open(book[3])
                 image = image.resize((153, 237), Image.LANCZOS)
-                cover = ImageTk.PhotoImage(image)
+                cover = ImageTk.PhotoImage(image, master=window)
             except FileNotFoundError:
                 continue
 
-            row = index // 4
+            row = index // 4 
             column = index % 4
             
             button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0]: show_details(id))
@@ -125,7 +145,7 @@ def update_catalog(search_text):
 
 # Окно подробностей книги
 def show_details(book_id):
-    # Скрываем каталог
+    # Скрываем каталог (скрытие поиска приводит к ошибке)
     catalog_frame.grid_forget()
     
     # Получаем данные о книге
@@ -138,7 +158,7 @@ def show_details(book_id):
     if book:
         # Новый фрейм для подробностей книги
         details_frame = tk.Frame(window)
-        details_frame.grid(row=0, column=0, padx=20, pady=20)
+        details_frame.grid(row=0, column=0, padx=10, pady=10)
 
         # Отображение обложки книги в фрейме
         try:
@@ -191,5 +211,5 @@ def insert_book(title, author, cover_image, description, content):
     connection.close()
 
 # Создание новых строк БД прямо из кода
-insert_book("Мастер и Маргарита (не фейк)", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
-insert_book("ШИФР", "Автор 5", "covers/cover2.png", "Описание книги 2", "Содержимое книги 2") 
+insert_book("Программирование на Python", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
+insert_book("Изучаем алгоритмы", "Автор 5", "covers/cover2.png", "Описание книги 2", "Содержимое книги 2") 
