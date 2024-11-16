@@ -1,6 +1,7 @@
 # Библиотеки: tkinter, sqlite3, Pillow.
 import tkinter as tk
 from tkinter import PhotoImage
+from tkinter import *
 import sqlite3
 import os
 from PIL import Image, ImageTk
@@ -52,7 +53,25 @@ def bind_scroll_events():
     # Обработка прокрутки для фрейма
     catalog_frame.bind("<MouseWheel>", lambda event: catalog_canvas.yview_scroll(-1 if event.delta > 0 else 1, "units"))
 
-# Окно и виджеты
+# Сочетания клавиш
+
+def handle_key_press(event, search_entry):
+    if event.keysym == 'Escape': 
+        search_entry.delete(0, tk.END)  
+    
+        # Обработка сочетания Ctrl+A
+    elif event.state & 0x0004 and (event.keycode == 65):  # 0x0004 - состояние Ctrl
+        search_entry.select_range(0, tk.END)  # Выделение всего текста в поле поиска
+
+    # Обработка сочетания Ctrl+V
+    elif event.state & 0x0004 and (event.keysym == 86 or event.keysym == 109):  # 0x0004 - состояние Ctrl
+        try:
+            clipboard_content = window.clipboard_get()  # Получение содержимого из буфера обмена
+            search_entry.insert(tk.END, clipboard_content)  # Вставка содержимого в поле поиска
+        except tk.TclError:
+            pass  # Игнорируем ошибку, если буфер обмена пуст
+
+# Вызов функции настройки сочетаний клавиш в функции создания главного окна
 def create_main_window():
     global window, catalog_frame
     window = tk.Tk()
@@ -138,7 +157,9 @@ def update_catalog(search_text):
                       search_text.lower() in book[2].lower() or 
                       search_text.lower() in book[4].lower()]
 
-    loading_label.grid_forget()  # Скрываем метку "Загрузка..."
+    # Проверка на существование метки перед её скрытием
+    if loading_label.winfo_exists():
+        loading_label.grid_forget()  # Скрываем метку "Загрузка..."
 
     if not filtered_books:
         no_match_label = tk.Label(catalog_frame, text="Совпадения не найдены.", font=("Arial", 14))
