@@ -100,7 +100,8 @@ def update_catalog(search_text):
                       search_text.lower() in book[2].lower() or 
                       search_text.lower() in book[4].lower()]
 
-    loading_label.grid_forget()  # Скрываем метку "Загрузка..."
+    if loading_label.winfo_exists():
+        loading_label.grid_forget() # Скрываем лэйбл загрузки, если он есть
 
     if not filtered_books:
         no_match_label = tk.Label(catalog_frame, text="Совпадения не найдены.", font=("Arial", 14))
