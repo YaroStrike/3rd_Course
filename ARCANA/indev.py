@@ -118,8 +118,6 @@ def create_main_window():
 def update_scroll_region(event):
     catalog_canvas.configure(scrollregion=catalog_canvas.bbox("all"))
 
-current_details_frame = None # Окно деталей пока не выбрано
-
 def load_books():
     books = fetch_books()
     for index, book in enumerate(books):
@@ -188,8 +186,10 @@ def update_catalog(search_text):
             label.grid(row=row + 1, column=column, padx=10, pady=(0, 10), sticky='n')
 
 # Окно подробностей книги
+current_details_frame = None  # Глобальная переменная для хранения текущего окна деталей
+
 def show_details(book_id):
-    global current_details_frame  # Используем глобальную переменную
+    global current_details_frame  # Объявляем, что будем использовать глобальную переменную
     if current_details_frame:  # Если текущее окно существует, скрываем его
         current_details_frame.grid_forget()
     
@@ -202,33 +202,35 @@ def show_details(book_id):
     
     if book:
         # Новый фрейм для подробностей книги
-        details_frame = tk.Frame(window)
-        details_frame.grid(row=0, column=0, sticky='nsew')
+        current_details_frame = tk.Frame(window)  # Обновляем глобальную переменную
+        current_details_frame.grid(row=0, column=0, sticky='nsew')
 
         # Отображение обложки книги в фрейме
         try:
             image = Image.open(book[3])
             image = image.resize((200, 300), Image.LANCZOS)
             cover = ImageTk.PhotoImage(image)
-            cover_label = tk.Label(details_frame, image=cover)
+            cover_label = tk.Label(current_details_frame, image=cover)  # Используем current_details_frame
             cover_label.image = cover
-            cover_label.grid(row=0, column=1, sticky='nw' ,padx=20, pady=0)  # Размещаем обложку в верхнем левом углу
+            cover_label.grid(row=0, column=1, sticky='nw', padx=20, pady=0)
         except FileNotFoundError:
             print(f"Файл обложки {book[3]} не найден.")
             return
 
         # Отображаем информацию о книге
         details = f"Автор:           {book[2]}\nНазвание:    {book[1]}\nОписание:    {book[4]}"
-        details_label = tk.Label(details_frame, text=details, font=("Arial", 14), justify='left')
-        details_label.grid(row=0, column=2, sticky='nw', padx=20, pady=0)  # Размещаем детали справа от обложки
+        details_label = tk.Label(current_details_frame, text=details, font=("Arial", 14), justify='left')
+        details_label.grid(row=0, column=2, sticky='nw', padx=20, pady=0)
 
         # Кнопка "Назад"
-        back_button = tk.Button(details_frame, text="Назад", command=lambda: back_to_catalog(details_frame), font=("Arial", 14))
-        back_button.grid(row=0, column=0, sticky='nw', padx=0, pady=0)  # Размещаем кнопку "Назад" вверху слева
+        back_button = tk.Button(current_details_frame, text="Назад", command=lambda: back_to_catalog(), font=("Arial", 14))
+        back_button.grid(row=0, column=0, sticky='nw', padx=0, pady=0)
 
-# Возвращение в каталог
-def back_to_catalog(details_frame):
-    details_frame.grid_forget() 
+def back_to_catalog():
+    global current_details_frame
+    if current_details_frame:
+        current_details_frame.grid_forget()  # Скрываем текущее окно деталей
+        current_details_frame = None  # Обнуляем ссылку на текущее окно
 
 create_main_window()
 
