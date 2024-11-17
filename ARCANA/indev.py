@@ -52,18 +52,17 @@ def bind_scroll_events():
 
 # Сочетания клавиш
 
-search_text = ""
-
 def handle_key_press(event, search_entry):
+    # Очистка поиска - НЕ РАБОТАЕТ
     if event.keysym == 'Escape': 
-        search_entry.delete(0, tk.END)  
-        search_text = ""  # Сброс текста поиска
+        search_entry.delete(0, tk.END)
 
-        # Обработка сочетания Ctrl+A
-    elif event.state & 0x0004 and (event.keycode == 65):  # 0x0004 - состояние Ctrl
+        # Обработка сочетания Ctrl+A - НЕ РАБОТАЕТ
+    elif event.state & 0x0004 and (event.keysym == 65 or event.keysym == 102):  # 0x0004 - состояние Ctrl
+        search_entry.select_range(0, tk.END)
         search_entry.select_range(0, tk.END)  # Выделение всего текста в поле поиска
 
-    # Обработка сочетания Ctrl+V
+    # Обработка сочетания Ctrl+V - работает!
     elif event.state & 0x0004 and (event.keysym == 86 or event.keysym == 109):  # 0x0004 - состояние Ctrl
         try:
             clipboard_content = window.clipboard_get()  # Получение содержимого из буфера обмена
