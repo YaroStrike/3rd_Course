@@ -43,22 +43,22 @@ def fetch_books():
 
 # Скролл
 def bind_scroll_events():
-    catalog_canvas.bind("<MouseWheel>", lambda event: catalog_canvas.yview_scroll(-1 if event.delta > 0 else 1, "units"))  # Windows
-    catalog_canvas.bind("<Button-4>", lambda event: catalog_canvas.yview_scroll(-1, "units"))  # Прокрутка вверх (Linux)
-    catalog_canvas.bind("<Button-5>", lambda event: catalog_canvas.yview_scroll(1, "units"))   # Прокрутка вниз (Linux)
+    window.bind("<MouseWheel>", lambda event: catalog_canvas.yview_scroll(-1 if event.delta > 0 else 1, "units"))  # Windows
+    window.bind("<Button-4>", lambda event: catalog_canvas.yview_scroll(-1, "units"))  # Прокрутка вверх (Linux)
+    window.bind("<Button-5>", lambda event: catalog_canvas.yview_scroll(1, "units"))   # Прокрутка вниз (Linux)
 
-    catalog_frame.bind("<Enter>", lambda event: catalog_canvas.bind_all("<MouseWheel>", lambda e: catalog_canvas.yview_scroll(-1 if e.delta > 0 else 1, "units")))
-    catalog_frame.bind("<Leave>", lambda event: catalog_canvas.unbind_all("<MouseWheel>"))
-    
     # Обработка прокрутки для фрейма
     catalog_frame.bind("<MouseWheel>", lambda event: catalog_canvas.yview_scroll(-1 if event.delta > 0 else 1, "units"))
 
 # Сочетания клавиш
 
+search_text = ""
+
 def handle_key_press(event, search_entry):
     if event.keysym == 'Escape': 
         search_entry.delete(0, tk.END)  
-    
+        search_text = ""  # Сброс текста поиска
+
         # Обработка сочетания Ctrl+A
     elif event.state & 0x0004 and (event.keycode == 65):  # 0x0004 - состояние Ctrl
         search_entry.select_range(0, tk.END)  # Выделение всего текста в поле поиска
@@ -70,6 +70,8 @@ def handle_key_press(event, search_entry):
             search_entry.insert(tk.END, clipboard_content)  # Вставка содержимого в поле поиска
         except tk.TclError:
             pass  # Игнорируем ошибку, если буфер обмена пуст
+    else:
+        search_text = search_entry.get()
 
 # Вызов функции настройки сочетаний клавиш в функции создания главного окна
 def create_main_window():
@@ -115,6 +117,8 @@ def create_main_window():
 # Обновление размеров canvas
 def update_scroll_region(event):
     catalog_canvas.configure(scrollregion=catalog_canvas.bbox("all"))
+
+current_details_frame = None # Окно деталей пока не выбрано
 
 def load_books():
     books = fetch_books()
@@ -185,8 +189,9 @@ def update_catalog(search_text):
 
 # Окно подробностей книги
 def show_details(book_id):
-    # Скрываем каталог (скрытие поиска приводит к ошибке)
-    catalog_frame.grid_forget()
+    global current_details_frame  # Используем глобальную переменную
+    if current_details_frame:  # Если текущее окно существует, скрываем его
+        current_details_frame.grid_forget()
     
     # Получаем данные о книге
     connection = sqlite3.connect(first_db)
@@ -198,7 +203,7 @@ def show_details(book_id):
     if book:
         # Новый фрейм для подробностей книги
         details_frame = tk.Frame(window)
-        details_frame.grid(row=0, column=0, padx=10, pady=10)
+        details_frame.grid(row=0, column=0, sticky='nsew')
 
         # Отображение обложки книги в фрейме
         try:
@@ -224,9 +229,6 @@ def show_details(book_id):
 # Возвращение в каталог
 def back_to_catalog(details_frame):
     details_frame.grid_forget() 
-    catalog_frame.grid(row=1, column=0)
-    bind_scroll_events()  # Повторная привязка событий прокрутки
-    update_scroll_region(None)  # Обновление области прокрутки
 
 create_main_window()
 
