@@ -146,7 +146,7 @@ def load_books():
         
         button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0]: show_details(id))
         button.image = cover
-        button.grid(row=row, column=column, padx=10, pady=5)  # Интервал обложек в меню
+        button.grid(row=row, column=column, padx=10, pady=(95, 0), sticky='n')  # Интервал обложек в меню
         
         # Размещение названия книги с авторазделением
         formatted_title = format_in_catalog(book[1])
@@ -219,7 +219,7 @@ def show_details(book_id):
         # Отображение обложки книги в фрейме
         try:
             image = Image.open(book[3])
-            image = image.resize((200, 300), Image.LANCZOS)
+            image = image.resize((232, 348), Image.LANCZOS)
             cover = ImageTk.PhotoImage(image)
             cover_label = tk.Label(current_details_frame, image=cover)  # Используем current_details_frame
             cover_label.image = cover
