@@ -22,6 +22,8 @@ def create_database():
         title TEXT NOT NULL,
         author TEXT NOT NULL,
         cover_image TEXT NOT NULL,
+        publisher TEST NOT NULL,
+        translator TEXT NOT NULL,
         description TEXT NOT NULL,
         content TEXT NOT NULL
     );
@@ -131,7 +133,7 @@ def load_books():
         row = index // 4 
         column = index % 4
         
-        button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0]: show_details(id))
+        button = tk.Button(catalog_frame, image=cover, command=lambda id=book[0], title=format_text(book[1]), description=format_text(book[6]): show_details(id, title, description))
         button.image = cover
         button.grid(row=row, column=column, padx=10, pady=50)  # Интервал обложек в меню
         
@@ -187,12 +189,16 @@ def update_catalog(search_text):
 # Окно подробностей книги
 current_details_frame = None  # Глобальная переменная для хранения текущего окна деталей
 
-def show_details(book_id):
-    global current_details_frame  # Объявляем, что будем использовать глобальную переменную
-    if current_details_frame:  # Если текущее окно существует, скрываем его
+def format_text(text):
+    if len(text) > 24:
+        return '\n'.join([text[i:i+24] for i in range(0, len(text), 24)])
+    return text
+
+def show_details(book_id, title, description):
+    global current_details_frame
+    if current_details_frame:
         current_details_frame.grid_forget()
     
-    # Получаем данные о книге
     connection = sqlite3.connect(first_db)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM books WHERE id=?", (book_id,))
@@ -200,28 +206,27 @@ def show_details(book_id):
     connection.close()
     
     if book:
-        # Новый фрейм для подробностей книги
-        current_details_frame = tk.Frame(window)  # Обновляем глобальную переменную
+        current_details_frame = tk.Frame(window)
         current_details_frame.grid(row=0, column=0, sticky='nsew')
 
-        # Отображение обложки книги в фрейме
         try:
             image = Image.open(book[3])
             image = image.resize((200, 300), Image.LANCZOS)
             cover = ImageTk.PhotoImage(image)
-            cover_label = tk.Label(current_details_frame, image=cover)  # Используем current_details_frame
+            cover_label = tk.Label(current_details_frame, image=cover)
             cover_label.image = cover
             cover_label.grid(row=0, column=1, sticky='nw', padx=20, pady=0)
         except FileNotFoundError:
             print(f"Файл обложки {book[3]} не найден.")
-            return
+            returnz
 
-        # Отображаем информацию о книге
-        details = f"Автор:           {book[2]}\nНазвание:    {book[1]}\nОписание:    {book[4]}"
+        sn_title = format_text(book[1])  # Форматируем название
+        sn_descr = format_text(book[6])   # Форматируем описание
+
+        details = f"Автор:           {book[2]}\n\nНазвание:    {sn_title}\n\nИздатель:    {book[4]}\n\nПереводчик:    {book[5]}\n\nОписание:    {sn_descr}"
         details_label = tk.Label(current_details_frame, text=details, font=("Arial", 14), justify='left')
         details_label.grid(row=0, column=2, sticky='nw', padx=20, pady=0)
 
-        # Кнопка "Назад"
         back_button = tk.Button(current_details_frame, text="Назад", command=lambda: back_to_catalog(), font=("Arial", 14))
         back_button.grid(row=0, column=0, sticky='nw', padx=0, pady=0)
 
@@ -234,7 +239,7 @@ def back_to_catalog():
 create_main_window()
 
 # Условия пополнения БД из кода
-def insert_book(title, author, cover_image, description, content):
+def insert_book(title, author, cover_image, publisher, translator, description, content):
     connection = sqlite3.connect(first_db)
     cursor = connection.cursor()
     
@@ -244,8 +249,8 @@ def insert_book(title, author, cover_image, description, content):
     
     if existing_book is None:  # Если книга не найдена, добавляем её
         try:
-            cursor.execute("INSERT INTO books (title, author, cover_image, description, content) VALUES (?, ?, ?, ?, ?)",
-                           (title, author, cover_image, description, content))
+            cursor.execute("INSERT INTO books (title, author, cover_image, publisher, translator, description, content) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                           (title, author, cover_image, publisher, translator, description, content))
             connection.commit()
             print(f"Книга '{author} - {title}' успешно добавлена в базу данных '{first_db}'.")
         except Exception as e:
@@ -256,4 +261,4 @@ def insert_book(title, author, cover_image, description, content):
     connection.close()
 
 # Создание новых строк БД прямо из кода, (пропускается, если уже есть)
-insert_book("Программирование на PHP", "Автор 3", "covers/cover1.png", "Описание книги 1", "Содержимое книги 1")
+insert_book("Программирование на PHP", "Автор 3", "covers/cover1.png", "Издатель", "Переводчик", "Описание книги 1", "Содержимое книги 1")
