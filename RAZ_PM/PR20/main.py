@@ -12,9 +12,10 @@ pygame.init()
 # Настройка дисплея
 WIDTH, HEIGHT = 1366, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-background_image = pygame.image.load('vostochny.jpg')
+backgrounds = ['vostochny.jpg', 'tropo.jpg', 'strato.jpg']
+current_bg_index = 0
+background_image = pygame.image.load(backgrounds[current_bg_index])
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
-
 
 # Свойства ракеты
 rocket_pos = [(WIDTH // 2)-20, HEIGHT - 245]
@@ -77,23 +78,30 @@ while running:
         show_start_menu()
     else:
         # Apply gravity
-        rocket_pos[1] += gravity * 0.1
+        rocket_pos[1] += gravity * 0.4
         if rocket_pos[1] > initial_rocket_pos:
             rocket_pos[1] = initial_rocket_pos
         # Обновление позиции ракеты
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
-            rocket_pos[1] -= thrust * 10  # Движение ракеты вверх
+            rocket_pos[1] -= thrust * 8  # Движение ракеты вверх
             create_exhaust()
         if keys[pygame.K_DOWN]:
-            rocket_pos[1] += thrust * 10  # Движение ракеты вниз
+            rocket_pos[1] -= thrust * 2.5  # Движение ракеты вниз
             create_exhaust()
 
         # Change background if rocket exits
-        if rocket_pos[1] < 0:
+        if rocket_pos[1] < -250: # следующий фон
             particles.clear()
-            background_image = pygame.image.load('new_background.jpg')
-            rocket_pos[1] = HEIGHT  # Reset rocket position to the bottom
+            current_bg_index = (current_bg_index + 1) % len(backgrounds)
+            background_image = pygame.image.load(backgrounds[current_bg_index])
+            rocket_pos[1] = (HEIGHT)  # Reset rocket position to the bottom
+        elif rocket_pos[1] > 452.6: # предыдущий фон
+            particles.clear()
+            if current_bg_index != 0: 
+                current_bg_index = (current_bg_index - 1) % len(backgrounds)
+                background_image = pygame.image.load(backgrounds[current_bg_index])
+                rocket_pos[1] = -250
         # Отрисовка всего
         update_exhaust()
         screen.blit(background_image, (0, 0))
