@@ -12,7 +12,7 @@ pygame.init()
 # Настройка дисплея
 WIDTH, HEIGHT = 1366, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-backgrounds = ['vostochny.jpg', 'tropo.jpg', 'strato.jpg']
+backgrounds = ['vostochny.jpg', 'tropo.jpg', 'strato.jpg', 'ISS.jpg']
 current_bg_index = 0
 background_image = pygame.image.load(backgrounds[current_bg_index])
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
@@ -95,12 +95,14 @@ while running:
             particles.clear()
             current_bg_index = (current_bg_index + 1) % len(backgrounds)
             background_image = pygame.image.load(backgrounds[current_bg_index])
+            background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
             rocket_pos[1] = (HEIGHT)  # Reset rocket position to the bottom
         elif rocket_pos[1] > 452.6: # предыдущий фон
             particles.clear()
             if current_bg_index != 0: 
                 current_bg_index = (current_bg_index - 1) % len(backgrounds)
                 background_image = pygame.image.load(backgrounds[current_bg_index])
+                background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
                 rocket_pos[1] = -250
         # Отрисовка всего
         update_exhaust()
