@@ -12,7 +12,7 @@ pygame.init()
 # Настройка дисплея
 WIDTH, HEIGHT = 1366, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-backgrounds = ['vostochny.jpg', 'tropo.jpg', 'strato.jpg', 'ISS.jpg']
+backgrounds = ['vostochny.jpg', 'tropo.jpg', 'strato.jpg', 'orbit.jpg', 'ISS.jpg']
 current_bg_index = 0
 background_image = pygame.image.load(backgrounds[current_bg_index])
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
@@ -65,9 +65,33 @@ def update_exhaust():
     # Remove particles that are too small or have gone off-screen
     particles[:] = [p for p in particles if p[1] < HEIGHT and p[5] > 0]
 
+def display_end_screen(elapsed_time):
+    overlay = pygame.Surface((WIDTH, HEIGHT))
+    overlay.fill((0, 0, 0))
+    overlay.set_alpha(128)  # Устанавливаем уровень прозрачности (0-255)
+    
+    font = pygame.font.Font(None, 74)
+    text = font.render(f"~2 световые секунды пройдено,", True, (255, 255, 255))
+    time_text = font.render(f"реальных секунд потрачено: {elapsed_time:.2f}", True, (255, 255, 255))
+    
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
+                running = False
+
+        screen.blit(overlay, (0, 0))  # Накладываем полупрозрачный фон
+        screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 - text.get_height() // 2 - 20))
+        screen.blit(time_text, (WIDTH // 2 - time_text.get_width() // 2, HEIGHT // 2 + 20))
+        pygame.display.flip()
+
 # Игровой цикл
 running = True
 while running:
+    global start_time
+    start_time = pygame.time.get_ticks()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -81,6 +105,8 @@ while running:
         rocket_pos[1] += gravity * 0.4
         if rocket_pos[1] > initial_rocket_pos:
             rocket_pos[1] = initial_rocket_pos
+        if current_bg_index == 3:
+            gravity = 1.62
         # Обновление позиции ракеты
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
@@ -104,6 +130,12 @@ while running:
                 background_image = pygame.image.load(backgrounds[current_bg_index])
                 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
                 rocket_pos[1] = -250
+                if current_bg_index == (3 or 4):
+                    gravity = 1.62
+        if current_bg_index == 4 and rocket_pos[1] < HEIGHT // 2:  # Проверка на достижение середины фона
+            game_started = False
+            elapsed_time = (start_time) / 1000  # Время в секундах
+            display_end_screen(elapsed_time)
         # Отрисовка всего
         update_exhaust()
         screen.blit(background_image, (0, 0))
